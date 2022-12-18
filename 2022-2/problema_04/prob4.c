@@ -5,38 +5,22 @@
 #include <math.h>
 
 double calculate_log_2(int n) {
-  double log10_2 = log10(2);
-  
-  return log10(n) / log10_2;
-}
-
-int get_quantity(int n, int base_2) {
-  int remaining = n - pow(2, base_2);
-  int quantity = 1;
-
-  while (remaining > 0) {
-    quantity++;
-    int current_base_2 = (int) calculate_log_2(remaining);
-    remaining = remaining - pow(2, current_base_2);
-  }
-
-  return quantity;
+  return log2(n);
 }
 
 int get_min_quantity(int n, int base_2) {
-  //quantidade sem troco
-  int floor_quantity = get_quantity(n, base_2);
+  int remaining = n;
+  int current_base_2 = base_2;
+  int quantity = 0;
 
-  //com troco
-  int transfer_value = pow(2, base_2 + 1);  
-  int change = transfer_value - n;
+  while (remaining > 0) {
+    int current_value = pow(2, current_base_2);
+    remaining = abs(remaining - current_value);
+    current_base_2 = round(calculate_log_2(remaining));
+    quantity++;
+  }
 
-  int new_base_2 = (int) calculate_log_2(change);
-  int change_quantity = get_quantity(change, new_base_2);
-  
-  int final_quantity = change_quantity + 1;
-
-  return (floor_quantity < final_quantity) ? floor_quantity : final_quantity;
+  return quantity;
 }
 
 int main()
@@ -52,7 +36,7 @@ int main()
   }
 
   else {
-    int int_base_2 = (int) base_2;
+    int int_base_2 = round(base_2);
     int quantity = get_min_quantity(n, int_base_2);
     printf("%d", quantity);
   }
